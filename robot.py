@@ -1,1 +1,2 @@
-# TODO: insert robot code here
+"""This module controls the robot."""
+print("Hello World")
