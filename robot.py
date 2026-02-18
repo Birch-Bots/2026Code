@@ -17,7 +17,16 @@ import drivetrain
 class MyRobot(wpilib.TimedRobot):
     def robotInit(self) -> None:
         """Robot initialization function"""
+        # connecting to our xbox controller - to do: connect to a secondary controller 
         self.controller = wpilib.XboxController(0)
+
+        ''' this code is for standard Differential Drive, but is not for swerve. Does show an example of CAN assignment 
+        self.leftDrive = rev.CANSparkMax(1, rev.CANSparkMax.MotorType.kBrushless)
+        self.rightDrive = rev.CANSparkMax(2, rev.CANSparkMax.MotorType.kBrushless)
+        self.robotDrive = wpilib.drive.DifferentialDrive(
+            self.leftDrive, self.rightDrive
+        )
+        '''
         self.swerve = drivetrain.Drivetrain()
 
         # Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
@@ -26,10 +35,12 @@ class MyRobot(wpilib.TimedRobot):
         self.rotLimiter = wpimath.filter.SlewRateLimiter(3)
 
     def autonomousPeriodic(self) -> None:
+        # Sets up our autonomous driving period
         self.driveWithJoystick(False)
         self.swerve.updateOdometry()
 
     def teleopPeriodic(self) -> None:
+        # Setting up user operated driving 
         self.driveWithJoystick(True)
 
     def driveWithJoystick(self, fieldRelative: bool) -> None:
