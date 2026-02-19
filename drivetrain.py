@@ -12,6 +12,7 @@ import wpimath.geometry
 import wpimath.kinematics
 import swervemodule
 
+# maxspeed handles linear motion, angularspeed handles turning speed
 kMaxSpeed = 3.0  # 3 meters per second
 kMaxAngularSpeed = math.pi  # 1/2 rotation per second
 
@@ -22,6 +23,7 @@ class Drivetrain:
     """
 
     def __init__(self) -> None:
+        #Where are the wheels in relation to the origin (center of the robot) - values need to be specific to the robot, right now it's not 
         self.frontLeftLocation = wpimath.geometry.Translation2d(0.381, 0.381)
         self.frontRightLocation = wpimath.geometry.Translation2d(0.381, -0.381)
         self.backLeftLocation = wpimath.geometry.Translation2d(-0.381, 0.381)
