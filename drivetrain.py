@@ -1,5 +1,6 @@
 """This module sets up the drivetrain."""
 
+# this file / code in general seems to be working with field relative position rather than robot centric movement, look into this and modify
 #
 # Copyright (c) FIRST and other WPILib contributors.
 # Open Source Software; you can modify and/or share it under the terms of
@@ -29,11 +30,14 @@ class Drivetrain:
         self.backLeftLocation = wpimath.geometry.Translation2d(-0.381, 0.381)
         self.backRightLocation = wpimath.geometry.Translation2d(-0.381, -0.381)
 
+        ''' Written for wrong encoders, need to update to be for CANSparkMax, and update in the SwerveModule constructor 
         self.frontLeft = swervemodule.SwerveModule(1, 2, 0, 1, 2, 3)
         self.frontRight = swervemodule.SwerveModule(3, 4, 4, 5, 6, 7)
         self.backLeft = swervemodule.SwerveModule(5, 6, 8, 9, 10, 11)
         self.backRight = swervemodule.SwerveModule(7, 8, 12, 13, 14, 15)
+        '''
 
+        # gyro is used to measure rate of rotation
         self.gyro = wpilib.AnalogGyro(0)
 
         self.kinematics = wpimath.kinematics.SwerveDrive4Kinematics(
@@ -78,7 +82,9 @@ class Drivetrain:
                     wpimath.kinematics.ChassisSpeeds.fromFieldRelativeSpeeds(
                         xSpeed, ySpeed, rot, self.gyro.getRotation2d()
                     )
+                    # action needed : add in code for when field relative is true 
                     if fieldRelative
+                    #chassis speeds sets the information for the robot frame speed itself/velocity
                     else wpimath.kinematics.ChassisSpeeds(xSpeed, ySpeed, rot)
                 ),
                 periodSeconds,
