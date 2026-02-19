@@ -21,6 +21,7 @@ kModuleMaxAngularAcceleration = math.tau
 
 
 class SwerveModule:
+    #right now takes in incorrect number of/type of encoders. needs to take in CANSparkMax
     def __init__(
         self,
         driveMotorChannel: int,
