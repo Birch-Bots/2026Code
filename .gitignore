@@ -1,0 +1,6 @@
+/.pytest_cache
+/.wpilib
+/ctre_sim
+/logs
+/tests
+/__pycache__

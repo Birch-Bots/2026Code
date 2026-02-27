@@ -1,0 +1,22 @@
+# robotpy.toml — FRC Team 5421 | Swerve Drive Only
+# Run: python -m robotpy sync
+# Run: python -m robotpy deploy
+
+[tool.robotpy]
+robotpy_version = "2026.2.1.1"
+components = [
+    # "all",
+    # "apriltag",
+    # "commands2",
+    # "cscore",
+    # "romi",
+    # "sim",
+    # "xrp",
+    # "phoenix6",
+]
+requires = [
+    "robotpy[all]",
+    "robotpy-rev",        # SparkMAX / SparkFlex
+    "robotpy-navx",      # NavX IMU
+    "phoenix6",
+]
