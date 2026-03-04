@@ -1,66 +1,44 @@
-"""This module controls the robot."""
-#!/usr/bin/env python3
-#
-# Copyright (c) FIRST and other WPILib contributors.
-# Open Source Software; you can modify and/or share it under the terms of
-# the WPILib BSD license file in the root directory of this project.
-#
+"""
+robot.py — FRC Team 5421 | Swerve Drive
+Minimal robot — drivetrain only.
+
+DRIVER CONTROLS (Xbox, Port 0):
+  Left  Stick   → Move (field-centric)
+  Right Stick X → Rotate
+  Left  Bumper  → Slow mode (30%)
+  Start         → Zero gyro
+  Back          → X-lock wheels
+"""
 
 import wpilib
-import wpimath
-import wpilib.drive
-import wpimath.filter
-import wpimath.controller
-import drivetrain
+import commands2
+from subsystems.drivetrain import Drivetrain
+from commands.default_drive import DefaultDrive
 
 
-class MyRobot(wpilib.TimedRobot):
-    def robotInit(self) -> None:
-        """Robot initialization function"""
-        self.controller = wpilib.XboxController(0)
-        self.swerve = drivetrain.Drivetrain()
+class MyRobot(commands2.TimedCommandRobot):
 
-        # Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
-        self.xspeedLimiter = wpimath.filter.SlewRateLimiter(3)
-        self.yspeedLimiter = wpimath.filter.SlewRateLimiter(3)
-        self.rotLimiter = wpimath.filter.SlewRateLimiter(3)
+    def robotInit(self):
+        wpilib.DataLogManager.start()
+        wpilib.DriverStation.silenceJoystickConnectionWarning(True)
 
-    def autonomousPeriodic(self) -> None:
-        self.driveWithJoystick(False)
-        self.swerve.updateOdometry()
+        self.drivetrain = Drivetrain()
+        self.driver     = wpilib.XboxController(0)
 
-    def teleopPeriodic(self) -> None:
-        self.driveWithJoystick(True)
-
-    def driveWithJoystick(self, fieldRelative: bool) -> None:
-        # Get the x speed. We are inverting this because Xbox controllers return
-        # negative values when we push forward.
-        xSpeed = (
-            -self.xspeedLimiter.calculate(
-                wpimath.applyDeadband(self.controller.getLeftY(), 0.02)
-            )
-            * drivetrain.kMaxSpeed
+        self.drivetrain.setDefaultCommand(
+            DefaultDrive(self.drivetrain, self.driver)
         )
 
-        # Get the y speed or sideways/strafe speed. We are inverting this because
-        # we want a positive value when we pull to the left. Xbox controllers
-        # return positive values when you pull to the right by default.
-        ySpeed = (
-            -self.yspeedLimiter.calculate(
-                wpimath.applyDeadband(self.controller.getLeftX(), 0.02)
-            )
-            * drivetrain.kMaxSpeed
-        )
+    def robotPeriodic(self):
+        commands2.CommandScheduler.getInstance().run()
 
-        # Get the rate of angular rotation. We are inverting this because we want a
-        # positive value when we pull to the left (remember, CCW is positive in
-        # mathematics). Xbox controllers return positive values when you pull to
-        # the right by default.
-        rot = (
-            -self.rotLimiter.calculate(
-                wpimath.applyDeadband(self.controller.getRightX(), 0.02)
-            )
-            * drivetrain.kMaxSpeed
-        )
+    def teleopInit(self):
+        commands2.CommandScheduler.getInstance().cancelAll()
+        self.drivetrain.zero_heading()  # add this line
 
-        self.swerve.drive(xSpeed, ySpeed, rot, fieldRelative, self.getPeriod())
+    def disabledInit(self):
+        commands2.CommandScheduler.getInstance().cancelAll()
+
+
+if __name__ == "__main__":
+    wpilib.run(MyRobot)
