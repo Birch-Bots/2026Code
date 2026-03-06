@@ -14,13 +14,14 @@ import wpilib
 import commands2
 from subsystems.drivetrain import Drivetrain
 from commands.default_drive import DefaultDrive
-
+from subsystems.vision import Vision
 
 class MyRobot(commands2.TimedCommandRobot):
 
     def robotInit(self):
         wpilib.DataLogManager.start()
         wpilib.DriverStation.silenceJoystickConnectionWarning(True)
+        self.vision = Vision()
 
         self.drivetrain = Drivetrain()
         self.driver     = wpilib.XboxController(0)
