@@ -59,14 +59,10 @@ class SwerveConstants:
     MAX_ANGULAR_SPEED_RPS = 2 * math.pi   # one full rotation per second
 
     # ── CANcoder absolute offsets (DEGREES) ──────────────────
-    # How to calibrate:
-    #   1. Point all wheels straight forward
-    #   2. Read each CANcoder's absolute position in Phoenix Tuner X
-    #   3. Paste the values here (negate if wheel spins backwards)
-    FRONT_LEFT_OFFSET  = -.1677*360 #-.1677 rotations
-    FRONT_RIGHT_OFFSET =  0.56*360 # .06 rotations
-    BACK_LEFT_OFFSET   = .029*360 # .029 rotations
-    BACK_RIGHT_OFFSET  =  -.499*360 #-.499 rotations
+    FRONT_LEFT_OFFSET  = -.1677*360
+    FRONT_RIGHT_OFFSET =  0.56*360
+    BACK_LEFT_OFFSET   = .029*360
+    BACK_RIGHT_OFFSET  =  -.499*360
 
     # ── Module positions relative to robot center ─────────────
     FRONT_LEFT_POSITION  = Translation2d( WHEELBASE_METERS / 2,  TRACKWIDTH_METERS / 2)
@@ -85,7 +81,7 @@ class SwerveConstants:
     DRIVE_KP  = 0.4
     DRIVE_KI  = 0.0
     DRIVE_KD  = 0.0
-    DRIVE_KFF = 1 / (MAX_DRIVE_SPEED_MPS / DRIVE_ENC_VELOCITY_FACTOR)  # feedforward
+    DRIVE_KFF = 1 / (MAX_DRIVE_SPEED_MPS / DRIVE_ENC_VELOCITY_FACTOR)
 
     # ── Steer PID (SparkMAX onboard) ─────────────────────────
     STEER_KP  = 1.5
@@ -96,3 +92,48 @@ class SwerveConstants:
 class OI:
     DRIVER_PORT     = 0
     DRIVER_DEADBAND = 0.05
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+#  AprilTag Vision Constants
+# ═══════════════════════════════════════════════════════════════════════════
+
+class VisionConstants:
+    # ── Camera Mount ──────────────────────────────────────────────────────
+    # Measure where your Limelight / PhotonVision camera sits on the robot
+    CAMERA_NAME      = "limelight"   # must match the camera web UI
+    CAMERA_X         =  0.30         # meters forward from robot center
+    CAMERA_Y         =  0.00         # meters left from robot center
+    CAMERA_Z         =  0.50         # meters up from the ground
+    CAMERA_PITCH_DEG = -15.0         # degrees downward tilt
+
+    # ── 2D Alignment PID (rotation to center a tag) ──────────────────────
+    ALIGN_KP            = 0.035
+    ALIGN_KI            = 0.0
+    ALIGN_KD            = 0.002
+    ALIGN_TOLERANCE_DEG = 1.5
+    ALIGN_MAX_OMEGA     = 2.0       # rad/s cap during alignment
+
+    # ── Pose Chaser PID (driving to a field coordinate) ──────────────────
+    DRIVE_KP            = 1.5
+    DRIVE_KI            = 0.0
+    DRIVE_KD            = 0.1
+
+    HEADING_KP          = 2.0
+    HEADING_KI          = 0.0
+    HEADING_KD          = 0.15
+
+    POSITION_TOLERANCE_M  = 0.05    # 5 cm
+    HEADING_TOLERANCE_DEG = 2.0     # degrees
+
+    # ── Speed Limits (pulled from your swerve constants) ──────────────────
+    MAX_SPEED = SwerveConstants.MAX_DRIVE_SPEED_MPS    # 4.6 m/s
+    MAX_OMEGA = SwerveConstants.MAX_ANGULAR_SPEED_RPS  # 2π rad/s
+
+    # ── Vision Trust (Kalman filter standard deviations) ──────────────────
+    ODOMETRY_STD_DEVS  = (0.1, 0.1, math.radians(2))
+    VISION_STD_DEVS    = (0.5, 0.5, math.radians(10))
+    MAX_POSE_AMBIGUITY = 0.20
+
+    # ── Approach Behavior ─────────────────────────────────────────────────
+    CLOSE_RANGE_M = 1.0   # switch from localization → fine-align
